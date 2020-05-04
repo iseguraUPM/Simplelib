@@ -1,4 +1,4 @@
-#include "simple_stack.h"
+#include "../include/simplelib/simple_stack.h"
 
 #include <stdlib.h>
 

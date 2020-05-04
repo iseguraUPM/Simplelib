@@ -1,23 +1,49 @@
-SHELL := /bin/bash
+SHELL 		:= /bin/bash
 
-all-tests := $(addsuffix .test, $(basename $(wildcard tests/*.test-in)))
+RM			:= rm -vf
 
-.PHONY : test all %.test
+CC			:= gcc
 
-SOURCES := main.c simple_queue.c simple_stack.c simple_linked_list.c simple_btree.c
+SRC 		:= 	src/simple_queue.c \
+				src/simple_stack.c \
+				src/simple_linked_list.c \
+				src/simple_btree.c
 
-main : $(SOURCES)
-	@gcc -Wall -o $@.out $(SOURCES) -I .
+OBJ 		:= $(subst src/,obj/,$(subst .c,.o,$(SRC)))
 
-test : $(all-tests)
+LDFLAGS		:= -lsimplelib
 
-%.test : %.test-in %.test-cmp main
-	@./main.out < $< 2>&1 | diff -q $(word 2, $?) - >/dev/null \
+CFLAGS		:= -Lbin -std=c99 -pedantic -Wextra -Wall -Wconversion -Iinclude 
+
+ALL_TESTS 	:= $(addsuffix .test, $(basename $(wildcard tests/*.test-in)))
+
+TEST_SRC	:= tests/src/main.c
+
+TEST_OBJ	:= $(subst tests/src,tests/obj/,$(subst .c,.o,$(TEST_SRC)))
+
+obj/%.o : src/%.c
+	gcc -c $< -o $@
+
+simplelib : $(OBJ)
+	ar rcs bin/lib$@.a $(OBJ)
+
+tests/obj/%.o : tests/src/%.c
+	gcc -c $< $(CFLAGS) -o $@
+
+tests/bin/main.out : $(TEST_OBJ) simplelib
+	gcc $< $(CFLAGS) $(LDFLAGS) -o $@
+
+test : $(ALL_TESTS)
+
+%.test : %.test-in %.test-cmp tests/bin/main.out
+	@$(word 3, $?) < $< 2>&1 | diff -q $(word 2, $?) - >/dev/null \
 	|| (echo "Test $@ failed" && exit 1)
 
 all : test 
 	@echo "Success, all tests passed."
 
 clean :
-	@rm *.out 2> /dev/null || echo > /dev/null
+	$(RM) $(OBJ) $(TEST_OBJ) *~
+
+.PHONY : test all %.test clean
 	

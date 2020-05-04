@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "simple_queue.h"
-#include "simple_stack.h"
-#include "simple_linked_list.h"
+#include <simplelib/simple_queue.h>
+#include <simplelib/simple_stack.h>
+#include <simplelib/simple_queue.h>
 
 
 #define streq(a, b) strcmp(a, b) == 0

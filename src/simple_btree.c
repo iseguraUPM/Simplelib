@@ -1,4 +1,4 @@
-#include "simple_btree.h"
+#include "../include/simplelib/simple_btree.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -173,7 +173,7 @@ btree_leaf_t* find_closest(btree_leaf_t* root, int key)
 }
 
 /**
- * Chooses a random leaf (left or right) and makes it a new root from all the subsequent leafs.
+ * Chooses a random leaf (left or right) and makes it the new subtree root from all the subsequent leafs.
  * The former root no longer has leafs.
  * @param root on which its leafs will be promoted.
  * @return the promoted leaf or NULL if the root has no leafs

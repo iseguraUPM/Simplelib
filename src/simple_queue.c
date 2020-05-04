@@ -1,4 +1,4 @@
-#include "simple_queue.h"
+#include "../include/simplelib/simple_queue.h"
 
 #include <stdlib.h>
 
