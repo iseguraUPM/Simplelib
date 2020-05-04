@@ -19,7 +19,7 @@ ALL_TESTS 	:= $(addsuffix .test, $(basename $(wildcard tests/*.test-in)))
 
 TEST_SRC	:= tests/src/main.c
 
-TEST_OBJ	:= $(subst tests/src,tests/obj/,$(subst .c,.o,$(TEST_SRC)))
+TEST_OBJ	:= $(subst tests/src,tests/obj,$(subst .c,.o,$(TEST_SRC)))
 
 obj/%.o : src/%.c
 	gcc -c $< -o $@
