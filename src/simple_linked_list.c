@@ -113,11 +113,13 @@ void add_dlist(simple_dlist_t* list, __DLIST_T e)
     if (is_dlist_empty(list))
     {
         list->_first = create_dlist_elem();
+        list->_first->_elem = e;
         list->_last = list->_first;
     }
     else
     {
         dlist_elem_t* new_elem = create_dlist_elem();
+        new_elem->_elem = e;
         new_elem->_prev = list->_last;
         list->_last->_next = new_elem;
         list->_last = new_elem;
