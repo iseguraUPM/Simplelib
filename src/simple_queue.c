@@ -25,7 +25,7 @@ simple_queue_t* create_queue()
     return new_s;
 }
 
-void free_queue_elems(queue_elem_t* e)
+static void free_queue_elems(queue_elem_t* e)
 {
     if (e != NULL)
     {
@@ -58,7 +58,7 @@ __T peek_queue(simple_queue_t* q)
     return q->_first->_elem;
 }
 
-queue_elem_t* create_queue_elem()
+static queue_elem_t* create_queue_elem()
 {
     return (queue_elem_t*) malloc(sizeof(queue_elem_t));
 }

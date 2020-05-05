@@ -33,7 +33,7 @@ simple_btree_t* create_btree()
     return new_btree;
 }
 
-void free_leafs(btree_leaf_t* leaf)
+static void free_leafs(btree_leaf_t* leaf)
 {
     if (leaf != NULL)
     {
@@ -62,7 +62,7 @@ int is_btree_empty(simple_btree_t *btree)
     return btree->_root == NULL;
 }
 
-btree_leaf_t* create_leaf()
+static btree_leaf_t* create_leaf()
 {
     btree_leaf_t* new_leaf = (btree_leaf_t*) malloc(sizeof(btree_leaf_t));
     new_leaf->_left = NULL;
@@ -77,7 +77,7 @@ btree_leaf_t* create_leaf()
  * @param key to look for
  * @return the leaf or the last leaf searched
  */
-btree_leaf_t* find_leaf(btree_leaf_t* root, int key)
+static btree_leaf_t* find_leaf(btree_leaf_t* root, int key)
 {
     if (root->_key == key)
         return root;
@@ -152,7 +152,7 @@ __BTREE_T* find_btree(simple_btree_t* btree, int key)
  * @param key to look for
  * @return the closest leaf root
  */
-btree_leaf_t* find_closest(btree_leaf_t* root, int key)
+static btree_leaf_t* find_closest(btree_leaf_t* root, int key)
 {
     if ((root->_left != NULL && root->_left->_key == key)
      || (root->_right != NULL && root->_right->_key == key))
@@ -178,7 +178,7 @@ btree_leaf_t* find_closest(btree_leaf_t* root, int key)
  * @param root on which its leafs will be promoted.
  * @return the promoted leaf or NULL if the root has no leafs
  **/
-btree_leaf_t* promote_leaf(btree_leaf_t* root)
+static btree_leaf_t* promote_leaf(btree_leaf_t* root)
 {
     // NOTE: can return NULL
     if (root->_left == NULL)

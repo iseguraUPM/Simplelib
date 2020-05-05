@@ -23,7 +23,7 @@ simple_stack_t* create_stack()
     return new_s;
 }
 
-void free_stack_elems(stack_elem_t* e)
+static void free_stack_elems(stack_elem_t* e)
 {
     if (e != NULL)
     {
@@ -56,7 +56,7 @@ __STACK_T peek_stack(simple_stack_t* s)
     return s->_last->_elem;
 }
 
-stack_elem_t* create_stack_elem()
+static stack_elem_t* create_stack_elem()
 {
     return (stack_elem_t*) malloc(sizeof(stack_elem_t));
 }

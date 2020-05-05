@@ -19,7 +19,7 @@ typedef struct simple_btree
     btree_leaf_t* _root;
 } simple_btree_t;
 
-void deep_add_leafs(btree_leaf_t * root, simple_dlist_t * list)
+static void deep_add_leafs(btree_leaf_t * root, simple_dlist_t * list)
 {
     if (root->_left != NULL)
     {

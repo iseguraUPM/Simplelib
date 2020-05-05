@@ -24,7 +24,7 @@ simple_dlist_t* create_dlist()
     return new_dlist;
 }
 
-void free_dlist_elems(dlist_elem_t* e)
+static void free_dlist_elems(dlist_elem_t* e)
 {
     if (e != NULL)
     {
@@ -65,7 +65,7 @@ __DLIST_T* last_dlist(simple_dlist_t* list)
     return &list->_last->_elem;
 }
 
-dlist_elem_t* elem_at_dlist(simple_dlist_t* list, int idx)
+static dlist_elem_t* elem_at_dlist(simple_dlist_t* list, int idx)
 {
     if (idx < 0 || idx >= list->_len)
         return NULL;
@@ -100,7 +100,7 @@ __DLIST_T* at_dlist(simple_dlist_t* list, int idx)
     return &e->_elem;
 }
 
-dlist_elem_t* create_dlist_elem()
+static dlist_elem_t* create_dlist_elem()
 {
     dlist_elem_t* new_elem = (dlist_elem_t*) malloc(sizeof(dlist_elem_t));
     new_elem->_next = NULL;
