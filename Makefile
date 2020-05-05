@@ -7,7 +7,8 @@ CC			:= gcc
 SRC 		:= 	src/simple_queue.c \
 				src/simple_stack.c \
 				src/simple_linked_list.c \
-				src/simple_btree.c
+				src/simple_btree.c \
+				src/transform.c
 
 OBJ 		:= $(subst src/,obj/,$(subst .c,.o,$(SRC)))
 
