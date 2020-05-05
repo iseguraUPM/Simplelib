@@ -8,7 +8,7 @@ int once = 1;
 typedef struct btree_leaf
 {
     int _key;
-    __BTREE_T _elem;
+    __BTREE_T _value;
     struct btree_leaf* _left;
     struct btree_leaf* _right;
 } btree_leaf_t;
@@ -96,13 +96,13 @@ static btree_leaf_t* find_leaf(btree_leaf_t* root, int key)
     }
 }
 
-int add_btree(simple_btree_t* btree, int key, __BTREE_T e)
+int add_btree(simple_btree_t* btree, int key, __BTREE_T value)
 {
     if (is_btree_empty(btree))
     {
         btree_leaf_t* new_leaf = create_leaf();
         new_leaf->_key = key;
-        new_leaf->_elem = e;
+        new_leaf->_value = value;
         btree->_root = new_leaf;
         btree->_size++;
         return 1;
@@ -117,7 +117,7 @@ int add_btree(simple_btree_t* btree, int key, __BTREE_T e)
     {
         btree_leaf_t* new_leaf = create_leaf();
         new_leaf->_key = key;
-        new_leaf->_elem = e;
+        new_leaf->_value = value;
         found_leaf->_left = new_leaf;
         btree->_size++;
         return 1;
@@ -126,7 +126,7 @@ int add_btree(simple_btree_t* btree, int key, __BTREE_T e)
     {
         btree_leaf_t* new_leaf = create_leaf();
         new_leaf->_key = key;
-        new_leaf->_elem = e;
+        new_leaf->_value = value;
         found_leaf->_right = new_leaf;
         btree->_size++;
         return 1;
@@ -142,7 +142,7 @@ __BTREE_T* find_btree(simple_btree_t* btree, int key)
     if (found_leaf->_key != key)
         return NULL;
 
-    return &found_leaf->_elem;
+    return &found_leaf->_value;
 }
 
 /**

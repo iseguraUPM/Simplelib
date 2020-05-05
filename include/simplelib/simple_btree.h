@@ -13,7 +13,7 @@ int get_btree_size(simple_btree_t *btree);
 
 int is_btree_empty(simple_btree_t *btree);
 
-int add_btree(simple_btree_t* btree, int key, __BTREE_T e);
+int add_btree(simple_btree_t* btree, int key, __BTREE_T value);
 
 __BTREE_T* find_btree(simple_btree_t* btree, int key);
 
