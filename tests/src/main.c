@@ -153,19 +153,19 @@ int hset_contains_test()
         fscanf(stdin, "%d\n", input + i);
     }
 
-    simple_hset_t* hset = create_hset();
+    simple_hset_t* hset = hset_create();
     for (int i = 0; i < size; i++)
     {
-        add_hset(hset, input[i]);
+        hset_add(hset, input[i]);
     }
 
-    for (int i = 0; i < get_hset_size(hset); i++)
+    for (int i = 0; i < hset_get_size(hset); i++)
     {
         if (hset_contains(hset, input[i]))
             fprintf(stdout, "%d\n", input[i]);
     }
 
-    return get_hset_size(hset) == size;
+    return hset_get_size(hset) == size;
 }
 
 int hset_remove_test()
@@ -179,15 +179,15 @@ int hset_remove_test()
         fscanf(stdin, "%d\n", input + i);
     }
 
-    simple_hset_t* hset = create_hset();
+    simple_hset_t* hset = hset_create();
     for (int i = 0; i < size; i++)
     {
-        add_hset(hset, input[i]);
+        hset_add(hset, input[i]);
     }
 
     for (int i = 0; i < size; i++)
     {
-        remove_hset(hset, input[i]);
+        hset_remove(hset, input[i]);
     }
 
     for (int i = 0; i < size; i++)
@@ -196,7 +196,7 @@ int hset_remove_test()
             fprintf(stdout, "%d\n", input[i]);
     }
 
-    return get_hset_size(hset) == 0;
+    return hset_get_size(hset) == 0;
 }
 
 int hset_large_test()
@@ -210,10 +210,10 @@ int hset_large_test()
         fscanf(stdin, "%d\n", input + i);
     }
 
-    simple_hset_t* hset = create_hset();
+    simple_hset_t* hset = hset_create();
     for (int i = 0; i < size; i++)
     {
-        add_hset(hset, input[i]);
+        hset_add(hset, input[i]);
     }
 
     for (int i = 0; i < size; i++)
@@ -222,7 +222,7 @@ int hset_large_test()
             fprintf(stdout, "%d\n", input[i]);
     }
 
-    return get_hset_size(hset) == size;
+    return hset_get_size(hset) == size;
 }
 
 int dlist_iterator_test()
