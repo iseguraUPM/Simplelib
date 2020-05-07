@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 
-#include "../include/simplelib/simple_btree.h"
+#include "../include/simplelib/simple_bin_tree.h"
 #include "../include/simplelib/simple_linked_list.h"
 
 typedef struct btree_leaf
@@ -33,7 +33,7 @@ static void deep_add_leafs(btree_leaf_t * root, simple_dlist_t * list)
     }
 }
 
-simple_dlist_t* to_sorted_list(simple_btree_t* btree)
+simple_dlist_t* bin_tree_to_sorted_list(simple_btree_t* btree)
 {
     simple_dlist_t * sorted_list = create_dlist();
     deep_add_leafs(btree->_root, sorted_list);

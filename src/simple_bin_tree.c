@@ -1,25 +1,25 @@
-#include "../include/simplelib/simple_btree.h"
+#include "../include/simplelib/simple_bin_tree.h"
 
 #include <stdlib.h>
 #include <time.h>
 
 int once = 1;
 
-typedef struct btree_leaf
+typedef struct bin_tree_leaf_t
 {
     int _key;
     __BTREE_T _value;
-    struct btree_leaf* _left;
-    struct btree_leaf* _right;
-} btree_leaf_t;
+    struct bin_tree_leaf_t* _left;
+    struct bin_tree_leaf_t* _right;
+} bin_tree_leaf_t;
 
-typedef struct simple_btree
+typedef struct simple_bin_tree_t
 {   
     int _size;
-    btree_leaf_t* _root;
-} simple_btree_t;
+    bin_tree_leaf_t* _root;
+} simple_bin_tree_t;
 
-simple_btree_t* create_btree()
+simple_bin_tree_t* bin_tree_create()
 {
     if (once)
     {
@@ -27,13 +27,13 @@ simple_btree_t* create_btree()
         once = 0;
     }
     
-    simple_btree_t* new_btree = (simple_btree_t*) malloc(sizeof(simple_btree_t));
+    simple_bin_tree_t* new_btree = (simple_bin_tree_t*) malloc(sizeof(simple_bin_tree_t));
     new_btree->_root = NULL;
     new_btree->_size = 0;
     return new_btree;
 }
 
-static void free_leafs(btree_leaf_t* leaf)
+static void free_leafs(bin_tree_leaf_t* leaf)
 {
     if (leaf != NULL)
     {
@@ -43,7 +43,7 @@ static void free_leafs(btree_leaf_t* leaf)
     }
 }
 
-void free_btree(simple_btree_t *btree)
+void bin_tree_free(simple_bin_tree_t *btree)
 {
     if (btree != NULL)
     {
@@ -52,19 +52,19 @@ void free_btree(simple_btree_t *btree)
     }
 }
 
-int get_btree_size(simple_btree_t *btree)
+int bin_tree_get_size(simple_bin_tree_t *btree)
 {
     return btree->_size;
 }
 
-int is_btree_empty(simple_btree_t *btree)
+int bin_tree_is_empty(simple_bin_tree_t *btree)
 {
     return btree->_root == NULL;
 }
 
-static btree_leaf_t* create_leaf()
+static bin_tree_leaf_t* create_leaf()
 {
-    btree_leaf_t* new_leaf = (btree_leaf_t*) malloc(sizeof(btree_leaf_t));
+    bin_tree_leaf_t* new_leaf = (bin_tree_leaf_t*) malloc(sizeof(bin_tree_leaf_t));
     new_leaf->_left = NULL;
     new_leaf->_right = NULL;
 
@@ -77,7 +77,7 @@ static btree_leaf_t* create_leaf()
  * @param key to look for
  * @return the leaf or the last leaf searched
  */
-static btree_leaf_t* find_leaf(btree_leaf_t* root, int key)
+static bin_tree_leaf_t* find_leaf(bin_tree_leaf_t* root, int key)
 {
     if (root->_key == key)
         return root;
@@ -96,11 +96,11 @@ static btree_leaf_t* find_leaf(btree_leaf_t* root, int key)
     }
 }
 
-int add_btree(simple_btree_t* btree, int key, __BTREE_T value)
+int bin_tree_put(simple_bin_tree_t* btree, int key, __BTREE_T value)
 {
-    if (is_btree_empty(btree))
+    if (bin_tree_is_empty(btree))
     {
-        btree_leaf_t* new_leaf = create_leaf();
+        bin_tree_leaf_t* new_leaf = create_leaf();
         new_leaf->_key = key;
         new_leaf->_value = value;
         btree->_root = new_leaf;
@@ -108,14 +108,14 @@ int add_btree(simple_btree_t* btree, int key, __BTREE_T value)
         return 1;
     }
 
-    btree_leaf_t* found_leaf = find_leaf(btree->_root, key);
+    bin_tree_leaf_t* found_leaf = find_leaf(btree->_root, key);
     if (found_leaf->_key == key)
     {
         return 0;
     }
     else if (found_leaf->_key > key)
     {
-        btree_leaf_t* new_leaf = create_leaf();
+        bin_tree_leaf_t* new_leaf = create_leaf();
         new_leaf->_key = key;
         new_leaf->_value = value;
         found_leaf->_left = new_leaf;
@@ -124,7 +124,7 @@ int add_btree(simple_btree_t* btree, int key, __BTREE_T value)
     }
     else // if (found_leaf->_key < key)
     {
-        btree_leaf_t* new_leaf = create_leaf();
+        bin_tree_leaf_t* new_leaf = create_leaf();
         new_leaf->_key = key;
         new_leaf->_value = value;
         found_leaf->_right = new_leaf;
@@ -133,12 +133,12 @@ int add_btree(simple_btree_t* btree, int key, __BTREE_T value)
     }
 }
 
-__BTREE_T* find_btree(simple_btree_t* btree, int key)
+__BTREE_T* bin_tree_find(simple_bin_tree_t* btree, int key)
 {
-    if (is_btree_empty(btree))
+    if (bin_tree_is_empty(btree))
         return NULL;
 
-    btree_leaf_t* found_leaf = find_leaf(btree->_root, key);
+    bin_tree_leaf_t* found_leaf = find_leaf(btree->_root, key);
     if (found_leaf->_key != key)
         return NULL;
 
@@ -152,7 +152,7 @@ __BTREE_T* find_btree(simple_btree_t* btree, int key)
  * @param key to look for
  * @return the closest leaf root
  */
-static btree_leaf_t* find_closest(btree_leaf_t* root, int key)
+static bin_tree_leaf_t* find_closest_parent(bin_tree_leaf_t* root, int key)
 {
     if ((root->_left != NULL && root->_left->_key == key)
      || (root->_right != NULL && root->_right->_key == key))
@@ -160,11 +160,11 @@ static btree_leaf_t* find_closest(btree_leaf_t* root, int key)
 
     if (root->_left != NULL && root->_key > key)
     {
-        return find_closest(root->_left, key);
+        return find_closest_parent(root->_left, key);
     }
     else if (root->_right != NULL && root->_key < key)
     {
-        return find_closest(root->_right, key);
+        return find_closest_parent(root->_right, key);
     }
     else
     {
@@ -178,7 +178,7 @@ static btree_leaf_t* find_closest(btree_leaf_t* root, int key)
  * @param root on which its leafs will be promoted.
  * @return the promoted leaf or NULL if the root has no leafs
  **/
-static btree_leaf_t* promote_leaf(btree_leaf_t* root)
+static bin_tree_leaf_t* promote_leaf(bin_tree_leaf_t* root)
 {
     // NOTE: can return NULL
     if (root->_left == NULL)
@@ -189,10 +189,10 @@ static btree_leaf_t* promote_leaf(btree_leaf_t* root)
     int choice = rand() > RAND_MAX / 2;
     if (choice)
     {
-        btree_leaf_t* new_root = root->_left;
+        bin_tree_leaf_t* new_root = root->_left;
 
         // look for the greatest key leaf
-        btree_leaf_t* max_root = find_closest(new_root, root->_right->_key);
+        bin_tree_leaf_t* max_root = find_closest_parent(new_root, root->_right->_key);
         max_root->_right = root->_right;
 
         root->_right = NULL;
@@ -201,10 +201,10 @@ static btree_leaf_t* promote_leaf(btree_leaf_t* root)
     }
     else
     {
-        btree_leaf_t* new_root = root->_right;
+        bin_tree_leaf_t* new_root = root->_right;
 
         // look for the least key leaf
-        btree_leaf_t* min_root = find_closest(new_root, root->_left->_key);
+        bin_tree_leaf_t* min_root = find_closest_parent(new_root, root->_left->_key);
         min_root->_left = root->_left;
 
         root->_right = NULL;
@@ -213,24 +213,24 @@ static btree_leaf_t* promote_leaf(btree_leaf_t* root)
     }
 }
 
-int remove_btree(simple_btree_t* btree, int key)
+int bin_tree_remove(simple_bin_tree_t* btree, int key)
 {
-    if (is_btree_empty(btree))
+    if (bin_tree_is_empty(btree))
         return 0;
 
     if (btree->_root->_key == key)
     {
-        btree_leaf_t* new_root = promote_leaf(btree->_root);
+        bin_tree_leaf_t* new_root = promote_leaf(btree->_root);
         free(btree->_root);
         btree->_root = new_root;
         btree->_size--;
         return 1;
     }
 
-    btree_leaf_t* found_root = find_closest(btree->_root, key);
+    bin_tree_leaf_t* found_root = find_closest_parent(btree->_root, key);
     if (found_root->_left != NULL && found_root->_left->_key == key)
     {
-        btree_leaf_t* new_root = promote_leaf(found_root->_left);
+        bin_tree_leaf_t* new_root = promote_leaf(found_root->_left);
         free(found_root->_left);
         found_root->_left = new_root;
         btree->_size--;
@@ -238,7 +238,7 @@ int remove_btree(simple_btree_t* btree, int key)
     }
     else if (found_root->_right != NULL && found_root->_right->_key == key)
     {
-        btree_leaf_t* new_root = promote_leaf(found_root->_right);
+        bin_tree_leaf_t* new_root = promote_leaf(found_root->_right);
         free(found_root->_right);
         found_root->_right = new_root;
         btree->_size--;

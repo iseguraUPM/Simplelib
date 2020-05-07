@@ -7,7 +7,7 @@ CC			:= gcc
 SRC 		:= 	src/simple_queue.c \
 				src/simple_stack.c \
 				src/simple_linked_list.c \
-				src/simple_btree.c \
+				src/simple_bin_tree.c \
 				src/simple_hash_table.c \
 				src/simple_hash_set.c \
 				src/transform.c
