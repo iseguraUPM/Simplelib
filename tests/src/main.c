@@ -6,6 +6,7 @@
 #include <simplelib/simple_btree.h>
 #include <simplelib/simple_linked_list.h>
 #include <simplelib/transform.h>
+#include <simplelib/simple_hash_set.h>
 
 #define streq(a, b) strcmp(a, b) == 0
 
@@ -141,6 +142,63 @@ int btree_remove_root_test()
     return get_btree_size(btree) == size - 1;
 }
 
+int hset_contains_test()
+{
+    int size;
+    fscanf(stdin, "%d\n", &size);
+
+    int input[size];
+    for (int i = 0; i < size; i++)
+    {
+        fscanf(stdin, "%d\n", input + i);
+    }
+
+    simple_hset_t* hset = create_hset();
+    for (int i = 0; i < size; i++)
+    {
+        add_hset(hset, input[i]);
+    }
+
+    for (int i = 0; i < get_hset_size(hset); i++)
+    {
+        if (hset_contains(hset, input[i]))
+            fprintf(stdout, "%d\n", input[i]);
+    }
+
+    return get_hset_size(hset) == size;
+}
+
+int hset_remove_test()
+{
+    int size;
+    fscanf(stdin, "%d\n", &size);
+
+    int input[size];
+    for (int i = 0; i < size; i++)
+    {
+        fscanf(stdin, "%d\n", input + i);
+    }
+
+    simple_hset_t* hset = create_hset();
+    for (int i = 0; i < size; i++)
+    {
+        add_hset(hset, input[i]);
+    }
+
+    for (int i = 0; i < size; i++)
+    {
+        remove_hset(hset, input[i]);
+    }
+
+    for (int i = 0; i < size; i++)
+    {
+        if (!hset_contains(hset, input[i]))
+            fprintf(stdout, "%d\n", input[i]);
+    }
+
+    return get_hset_size(hset) == 0;
+}
+
 int main(int argc, char** argv)
 {
     char test[32];
@@ -165,6 +223,14 @@ int main(int argc, char** argv)
     else if (streq(test, "btree-remove-root"))
     {
         return btree_remove_root_test();
+    }
+    else if (streq(test, "hset-contains"))
+    {
+        return hset_contains_test();
+    }
+    else if (streq(test, "hset-remove"))
+    {
+        return hset_remove_test();
     }
 
     return -1;

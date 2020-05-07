@@ -8,13 +8,15 @@ SRC 		:= 	src/simple_queue.c \
 				src/simple_stack.c \
 				src/simple_linked_list.c \
 				src/simple_btree.c \
+				src/simple_hash_table.c \
+				src/simple_hash_set.c \
 				src/transform.c
 
 OBJ 		:= $(subst src/,obj/,$(subst .c,.o,$(SRC)))
 
-LDFLAGS		:= -lsimplelib
+LDFLAGS		:= -lsimplelib -lm
 
-CFLAGS		:= -Lbin -std=c99 -pedantic -Wextra -Wall -Wconversion -Iinclude 
+CFLAGS		:= -O0 -g -Lbin -std=c99 -pedantic -Wextra -Wall -Wconversion -Iinclude 
 
 ALL_TESTS 	:= $(addsuffix .test, $(basename $(wildcard tests/*.test-in)))
 
@@ -23,7 +25,7 @@ TEST_SRC	:= tests/src/main.c
 TEST_OBJ	:= $(subst tests/src,tests/obj,$(subst .c,.o,$(TEST_SRC)))
 
 obj/%.o : src/%.c
-	gcc -c $< -o $@
+	gcc -c $< -g -o $@
 
 simplelib : $(OBJ)
 	ar rcs bin/lib$@.a $(OBJ)
