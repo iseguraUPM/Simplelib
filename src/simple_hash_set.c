@@ -1,6 +1,7 @@
 #include "../include/simplelib/simple_hash_set.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "../include/simplelib/simple_hash_table.h"
 
