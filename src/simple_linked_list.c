@@ -14,6 +14,13 @@ typedef struct simple_dlist {
     dlist_elem_t* _last;
 } simple_dlist_t;
 
+typedef struct siple_dlist_iterator
+{
+    simple_dlist_t* _list;
+    dlist_elem_t* _current_elem;
+    int _forward;
+} simple_dlist_iterator_t;
+
 simple_dlist_t* create_dlist()
 {
     simple_dlist_t* new_dlist = (simple_dlist_t*) malloc(sizeof(simple_dlist_t));
@@ -140,4 +147,40 @@ void remove_dlist(simple_dlist_t* list, int idx)
         
         free(found_elem);
     }
+}
+
+simple_dlist_iterator_t* get_dlist_iterator(simple_dlist_t* list, int forward)
+{
+    simple_dlist_iterator_t* it = (simple_dlist_iterator_t*) malloc(sizeof(simple_dlist_iterator_t));
+    it->_list = list;
+    it->_forward = forward;
+    if (forward)
+    {
+        it->_current_elem = it->_list->_first;
+    }
+    else
+    {
+        it->_current_elem = it->_list->_last;
+    }
+}
+
+void free_iterator(simple_dlist_iterator_t* iterator)
+{
+    free(iterator);
+}
+
+__DLIST_T* dlist_next(simple_dlist_iterator_t* iterator)
+{
+    if (iterator->_list != NULL && iterator->_current_elem != NULL)
+    {
+        if (iterator->_forward)
+            iterator->_current_elem = iterator->_current_elem->_next;
+        else
+            iterator->_current_elem = iterator->_current_elem->_prev;
+    }
+
+    if (iterator->_current_elem != NULL)
+        return &iterator->_current_elem->_elem;
+
+    return NULL;
 }
