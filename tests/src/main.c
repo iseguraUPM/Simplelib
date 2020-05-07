@@ -21,18 +21,18 @@ int stack_push_pop_test()
         fscanf(stdin, "%d\n", input + i);
     }
 
-    simple_stack_t* stack = create_stack();
+    simple_stack_t* stack = stack_create();
     for (int i = 0; i < size; i++)
     {
-        push_stack(stack, input[i]);
+        stack_push(stack, input[i]);
     }
     
     for (int i = 0; i < size; i++)
     {
-        fprintf(stdout, "%d\n", pop(stack));
+        fprintf(stdout, "%d\n", stack_pop(stack));
     }
 
-    return is_stack_empty(stack);
+    return stack_is_empty(stack);
 }
 
 int queue_push_pop_test()
