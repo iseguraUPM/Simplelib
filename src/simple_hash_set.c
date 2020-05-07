@@ -15,14 +15,14 @@ simple_hset_t * create_hset()
     simple_hset_t* new_hset = (simple_hset_t*) malloc(sizeof(simple_hset_t));
 
     new_hset->_size = 0;
-    new_hset->_htable = create_htable();
+    new_hset->_htable = htable_create();
 
     return new_hset;
 }
 
 void free_hset(simple_hset_t* hset)
 {
-    free_htable(hset->_htable);
+    htable_free(hset->_htable);
     free(hset);
 }
 
@@ -48,7 +48,7 @@ static char * generate_key(_HSET_T e)
 int hset_contains(simple_hset_t * hset, _HSET_T e)
 {
     char * key = generate_key(e);
-    int found = find_htable(hset->_htable, key) != NULL;
+    int found = htable_find(hset->_htable, key) != NULL;
 
     free(key);
     return found;
@@ -57,14 +57,14 @@ int hset_contains(simple_hset_t * hset, _HSET_T e)
 int add_hset(simple_hset_t * hset, _HSET_T e)
 {
     char * key = generate_key(e);
-    if (insert_htable(hset->_htable, key, e))
+    if (htable_insert(hset->_htable, key, e))
         hset->_size++;
 }
 
 int remove_hset(simple_hset_t * hset, _HSET_T e)
 {
     char * key = generate_key(e);
-    if (remove_htable(hset->_htable, key))
+    if (htable_remove(hset->_htable, key))
     {
         hset->_size--;
         free(key);
