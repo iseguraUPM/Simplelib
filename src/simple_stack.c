@@ -41,9 +41,9 @@ void free_stack(simple_stack_t* s)
     }
 }
 
-int get_stack_size(simple_stack_t* q)
+int get_stack_size(simple_stack_t* s)
 {
-    return q->_len;
+    return s->_len;
 }
 
 int is_stack_empty(simple_stack_t* s)
