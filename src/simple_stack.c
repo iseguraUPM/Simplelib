@@ -2,13 +2,13 @@
 
 #include <stdlib.h>
 
-typedef struct stack_elem
+typedef struct stack_elem_t
 {
     __STACK_T _elem;
-    struct stack_elem* _prev;
+    struct stack_elem_t* _prev;
 } stack_elem_t;
 
-typedef struct simple_stack
+typedef struct simple_stack_t
 {   
     int _len;
     stack_elem_t* _last;

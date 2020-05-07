@@ -3,7 +3,7 @@
 
 #define __STACK_T int
 
-typedef struct simple_stack simple_stack_t;
+typedef struct simple_stack_t simple_stack_t;
 
 simple_stack_t* stack_create();
 
