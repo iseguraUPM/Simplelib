@@ -2,20 +2,20 @@
 
 #include <stdlib.h>
 
-typedef struct queue_elem
+typedef struct queue_elem_t
 {
-    __T _elem;
-    struct queue_elem* _next;
+    __QUEUE_T _elem;
+    struct queue_elem_t* _next;
 } queue_elem_t;
 
-typedef struct simple_queue
+typedef struct simple_queue_t
 {   
     int _len;
     queue_elem_t* _first;
     queue_elem_t* _last;
 } simple_queue_t;
 
-simple_queue_t* create_queue()
+simple_queue_t* queue_create()
 {
     simple_queue_t* new_s = (simple_queue_t*) malloc(sizeof(simple_queue_t));
     new_s->_first = NULL;
@@ -25,47 +25,47 @@ simple_queue_t* create_queue()
     return new_s;
 }
 
-static void free_queue_elems(queue_elem_t* e)
+static void free_elems(queue_elem_t* e)
 {
     if (e != NULL)
     {
-        free_queue_elems(e->_next);
+        free_elems(e->_next);
         free(e);
     }
 }
 
-void free_queue(simple_queue_t* q)
+void queue_free(simple_queue_t* q)
 {
     if (q != NULL)
     {
-        free_queue_elems(q->_first);
+        free_elems(q->_first);
         free(q);
     }
 }
 
-int get_queue_size(simple_queue_t* q)
+int queue_get_size(simple_queue_t* q)
 {
     return q->_len;
 }
 
-int is_queue_empty(simple_queue_t* q)
+int queue_is_empty(simple_queue_t* q)
 {
     return q->_first == NULL;
 }
 
-__T peek_queue(simple_queue_t* q)
+__QUEUE_T queue_peek(simple_queue_t* q)
 {
     return q->_first->_elem;
 }
 
-static queue_elem_t* create_queue_elem()
+static queue_elem_t* create_elem()
 {
     return (queue_elem_t*) malloc(sizeof(queue_elem_t));
 }
 
-void push_queue(simple_queue_t* q, __T e)
+void queue_push(simple_queue_t* q, __QUEUE_T e)
 {
-    queue_elem_t* new_e = create_queue_elem();
+    queue_elem_t* new_e = create_elem();
     new_e->_elem = e;
     new_e->_next = NULL;
 
@@ -83,7 +83,7 @@ void push_queue(simple_queue_t* q, __T e)
     q->_len++;
 }
 
-__T deque(simple_queue_t* q)
+__QUEUE_T queue_pop(simple_queue_t* q)
 {
     queue_elem_t* first_e = q->_first;
 

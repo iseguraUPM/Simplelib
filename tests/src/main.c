@@ -46,18 +46,18 @@ int queue_push_pop_test()
         fscanf(stdin, "%d\n", input + i);
     }
 
-    simple_queue_t* queue = create_queue();
+    simple_queue_t* queue = queue_create();
     for (int i = 0; i < size; i++)
     {
-        push_queue(queue, input[i]);
+        queue_push(queue, input[i]);
     }
     
     for (int i = 0; i < size; i++)
     {
-        fprintf(stdout, "%d\n", deque(queue));
+        fprintf(stdout, "%d\n", queue_pop(queue));
     }
 
-    return is_queue_empty(queue);
+    return queue_is_empty(queue);
 }
 
 int dlist_add_test()
