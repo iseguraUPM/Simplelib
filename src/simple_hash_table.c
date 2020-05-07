@@ -7,8 +7,7 @@
 
 #include "../include/simplelib/simple_linked_list.h"
 
-#define HTABLE_PRIME_A 163
-#define HTABLE_PRIME_B 199
+#define HTABLE_PRIME 163
 
 #define HTABLE_INITIAL_SIZE 53
 
@@ -19,9 +18,9 @@ typedef struct htable_elem
 {
     char* _key;
     _HTABLE_T _value;
+    // Chain for collisions
+    struct htable_elem* _next;
 } htable_elem_t;
-
-static htable_elem_t HTABLE_NO_ELEM = {NULL, NULL};
 
 typedef struct simple_htable
 {
@@ -99,35 +98,17 @@ void free_htable(simple_htable_t * htable)
  * @param m the size of the hash table
  * @return the hash code
  */
-static int htable_hash(const char* s, const int a, const int m)
+static int htable_hash(const char* s, const int m)
 {
     long hash = 0;
     const int len_s = strlen(s);
     for (int i = 0; i < len_s; i++)
     {
-        hash += (long) pow(a, len_s - (i + 1)) * s[i];
+        hash += (long) pow(HTABLE_PRIME, len_s - (i + 1)) * s[i];
         hash = hash % m;
     }
 
     return (int) hash;
-}
-
-/**
- * Try for a new hash using double hashing collition mitigation.
- * @param s the string to hash
- * @param num_buckets 
- * @param attempt the number of times received collision
- * @return the hash code
- */
-static int try_htable_hash(const char *s, const int num_buckets, const int attempt)
-{
-    const int hash_a = htable_hash(s, HTABLE_PRIME_A, num_buckets);
-    if (attempt == 0)
-        return hash_a % num_buckets;
-    
-    const int hash_b = htable_hash(s, HTABLE_PRIME_B, num_buckets);
-
-    return (hash_a + (attempt * (hash_b + 1))) % num_buckets;
 }
 
 static htable_elem_t* create_htable_elem(const char* key, _HTABLE_T value)
@@ -135,6 +116,7 @@ static htable_elem_t* create_htable_elem(const char* key, _HTABLE_T value)
     htable_elem_t* new_elem = (htable_elem_t*) malloc(sizeof(htable_elem_t));
     new_elem->_key = key;
     new_elem->_value = value;
+    new_elem->_next = NULL;
 
     return new_elem;
 }
@@ -147,8 +129,11 @@ static void resize_htable(simple_htable_t* htable, const int base_size) {
     simple_htable_t* new_htable = create_sized_htable(base_size);
     for (int i = 0; i < htable->_size; i++) {
         htable_elem_t* elem = htable->_elems[i];
-        if (elem != NULL && elem != &HTABLE_NO_ELEM) {
-            insert_htable(new_htable, elem->_key, elem->_value);
+        while (elem != NULL) {
+            char * key = (char *) malloc(sizeof(char) * strlen(elem->_key));
+            strcpy(key, elem->_key);
+            insert_htable(new_htable, key, elem->_value);
+            elem = elem->_next;
         }
     }
 
@@ -185,40 +170,45 @@ int insert_htable(simple_htable_t* htable, const char* key, _HTABLE_T value)
 
     htable_elem_t* new_elem = create_htable_elem(key, value);
 
-    int index = try_htable_hash(new_elem->_key, htable->_size, 0);
+    int index = htable_hash(new_elem->_key, htable->_size);
+    htable_elem_t* prev_elem = NULL;
     htable_elem_t* found_elem = htable->_elems[index];
-    int attempt = 1;
-    while (found_elem != NULL && found_elem != &HTABLE_NO_ELEM)
+    while (found_elem != NULL)
     {
         if (strcmp(found_elem->_key, key) == 0)
         {
+            new_elem->_next = found_elem->_next;
             free_htable_elem(found_elem);
-            htable->_elems[index] = new_elem;
+            if (prev_elem == NULL)
+                htable->_elems[index] = new_elem;
+            else
+                prev_elem->_next = new_elem;
             return 0;
         }
-        index = try_htable_hash(new_elem->_key, htable->_size, attempt);
-        found_elem = htable->_elems[index];
-        attempt++;
+
+        prev_elem = found_elem;
+        found_elem = found_elem->_next;
     }
 
-    htable->_elems[index] = new_elem;
+    if (prev_elem == NULL)
+        htable->_elems[index] = new_elem;
+    else
+        prev_elem->_next = new_elem;
+    
     htable->_count++;
     return 1;
 }
 
 _HTABLE_T * find_htable(simple_htable_t* htable, const char* key)
 {
-    int index = try_htable_hash(key, htable->_size, 0);
+    int index = htable_hash(key, htable->_size);
     htable_elem_t* found_elem = htable->_elems[index];
-    int attempt = 1;
     while (found_elem != NULL)
     {
-        if (found_elem != &HTABLE_NO_ELEM && strcmp(found_elem->_key, key) == 0)
+        if (strcmp(found_elem->_key, key) == 0)
             return &found_elem->_value;
 
-        index = try_htable_hash(key, htable->_size, attempt);
-        found_elem = htable->_elems[index];
-        attempt++;
+        found_elem = found_elem->_next;
     }
     
     return NULL;
@@ -230,22 +220,25 @@ int remove_htable(simple_htable_t* htable, const char* key)
     if (load < 10)
         resize_htable_down(htable);
 
-    int index = try_htable_hash(key, htable->_size, 0);
+    int index = htable_hash(key, htable->_size);
+    htable_elem_t* prev_elem = NULL;
     htable_elem_t* found_elem = htable->_elems[index];
-    int attempt = 1;
     while (found_elem != NULL)
     {
-        if (found_elem != &HTABLE_NO_ELEM && strcmp(found_elem->_key, key) == 0)
+        if (strcmp(found_elem->_key, key) == 0)
         {
+            if (prev_elem == NULL)
+                htable->_elems[index] = NULL;
+            else
+                prev_elem->_next = found_elem->_next;
+
             free_htable_elem(found_elem);
-            htable->_elems[index] = &HTABLE_NO_ELEM;
             htable->_count--;
             return 1;
         }
             
-        index = try_htable_hash(key, htable->_size, attempt);
-        found_elem = htable->_elems[index];
-        attempt++;
+        prev_elem = found_elem;
+        found_elem = found_elem->_next;
     }
 
     return 0;
