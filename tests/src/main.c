@@ -57,7 +57,7 @@ int queue_push_pop_test()
         fprintf(stdout, "%d\n", deque(queue));
     }
 
-    return is_stack_empty(queue);
+    return is_queue_empty(queue);
 }
 
 int dlist_add_test()
@@ -199,6 +199,32 @@ int hset_remove_test()
     return get_hset_size(hset) == 0;
 }
 
+int hset_large_test()
+{
+    int size;
+    fscanf(stdin, "%d\n", &size);
+
+    int input[size];
+    for (int i = 0; i < size; i++)
+    {
+        fscanf(stdin, "%d\n", input + i);
+    }
+
+    simple_hset_t* hset = create_hset();
+    for (int i = 0; i < size; i++)
+    {
+        add_hset(hset, input[i]);
+    }
+
+    for (int i = 0; i < size; i++)
+    {
+        if (hset_contains(hset, input[i]))
+            fprintf(stdout, "%d\n", input[i]);
+    }
+
+    return get_hset_size(hset) == size;
+}
+
 int dlist_iterator_test()
 {
     int size;
@@ -259,6 +285,10 @@ int main(int argc, char** argv)
     else if (streq(test, "hset-remove"))
     {
         return hset_remove_test();
+    }
+    else if (streq(test, "hset-large"))
+    {
+        return hset_large_test();
     }
     else if (streq(test, "dlist-iterator"))
     {
