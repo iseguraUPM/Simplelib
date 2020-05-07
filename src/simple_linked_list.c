@@ -2,26 +2,26 @@
 
 #include <stdlib.h>
 
-typedef struct dlist_elem {
+typedef struct dlist_elem_t {
     __DLIST_T _elem;
-    struct dlist_elem* _next;
-    struct dlist_elem* _prev;
+    struct dlist_elem_t* _next;
+    struct dlist_elem_t* _prev;
 } dlist_elem_t;
 
-typedef struct simple_dlist {
+typedef struct simple_dlist_t {
     int _len;
     dlist_elem_t* _first;
     dlist_elem_t* _last;
 } simple_dlist_t;
 
-typedef struct siple_dlist_iterator
+typedef struct simple_dlist_iterator_t
 {
     simple_dlist_t* _list;
     dlist_elem_t* _current_elem;
     int _forward;
 } simple_dlist_iterator_t;
 
-simple_dlist_t* create_dlist()
+simple_dlist_t* dlist_create()
 {
     simple_dlist_t* new_dlist = (simple_dlist_t*) malloc(sizeof(simple_dlist_t));
     new_dlist->_first = NULL;
@@ -31,32 +31,32 @@ simple_dlist_t* create_dlist()
     return new_dlist;
 }
 
-static void free_dlist_elems(dlist_elem_t* e)
+static void free_elems(dlist_elem_t* e)
 {
     if (e != NULL)
     {
-        free_dlist_elems(e->_next);
+        free_elems(e->_next);
         free(e);
     }
 }
 
-void free_dlist(simple_dlist_t* list)
+void dlist_free(simple_dlist_t* list)
 {
-    free_dlist_elems(list->_first);
+    free_elems(list->_first);
     free(list);
 }
 
-int get_dlist_size(simple_dlist_t* list)
+int dlist_get_size(simple_dlist_t* list)
 {
     return list->_len;
 }
 
-int is_dlist_empty(simple_dlist_t* list)
+int dlist_is_empty(simple_dlist_t* list)
 {
     return list->_first == NULL;
 }
 
-__DLIST_T* first_dlist(simple_dlist_t* list)
+__DLIST_T* dlist_first(simple_dlist_t* list)
 {
     if (list->_first == NULL)
         return NULL;
@@ -64,7 +64,7 @@ __DLIST_T* first_dlist(simple_dlist_t* list)
     return &list->_first->_elem;
 }
 
-__DLIST_T* last_dlist(simple_dlist_t* list)
+__DLIST_T* dlist_last(simple_dlist_t* list)
 {
     if (list->_last == NULL)
         return NULL;
@@ -72,7 +72,7 @@ __DLIST_T* last_dlist(simple_dlist_t* list)
     return &list->_last->_elem;
 }
 
-static dlist_elem_t* elem_at_dlist(simple_dlist_t* list, int idx)
+static dlist_elem_t* elem_at(simple_dlist_t* list, int idx)
 {
     if (idx < 0 || idx >= list->_len)
         return NULL;
@@ -98,16 +98,16 @@ static dlist_elem_t* elem_at_dlist(simple_dlist_t* list, int idx)
     return e;
 }
 
-__DLIST_T* at_dlist(simple_dlist_t* list, int idx)
+__DLIST_T* dlist_at(simple_dlist_t* list, int idx)
 {
-    dlist_elem_t* e = elem_at_dlist(list, idx);
+    dlist_elem_t* e = elem_at(list, idx);
     if (e == NULL)
         return NULL;
 
     return &e->_elem;
 }
 
-static dlist_elem_t* create_dlist_elem()
+static dlist_elem_t* create_elem()
 {
     dlist_elem_t* new_elem = (dlist_elem_t*) malloc(sizeof(dlist_elem_t));
     new_elem->_next = NULL;
@@ -115,17 +115,17 @@ static dlist_elem_t* create_dlist_elem()
     return new_elem;
 }
 
-void add_dlist(simple_dlist_t* list, __DLIST_T e)
+void dlist_add(simple_dlist_t* list, __DLIST_T e)
 {
-    if (is_dlist_empty(list))
+    if (dlist_is_empty(list))
     {
-        list->_first = create_dlist_elem();
+        list->_first = create_elem();
         list->_first->_elem = e;
         list->_last = list->_first;
     }
     else
     {
-        dlist_elem_t* new_elem = create_dlist_elem();
+        dlist_elem_t* new_elem = create_elem();
         new_elem->_elem = e;
         new_elem->_prev = list->_last;
         list->_last->_next = new_elem;
@@ -135,9 +135,9 @@ void add_dlist(simple_dlist_t* list, __DLIST_T e)
     list->_len++;
 }
 
-void remove_dlist(simple_dlist_t* list, int idx)
+void dlist_remove(simple_dlist_t* list, int idx)
 {
-    dlist_elem_t* found_elem = elem_at_dlist(list, idx);
+    dlist_elem_t* found_elem = elem_at(list, idx);
     if (found_elem != NULL)
     {
         if (found_elem->_prev != NULL)
@@ -149,7 +149,7 @@ void remove_dlist(simple_dlist_t* list, int idx)
     }
 }
 
-simple_dlist_iterator_t* get_dlist_iterator(simple_dlist_t* list, int forward)
+simple_dlist_iterator_t* dlist_get_iterator(simple_dlist_t* list, int forward)
 {
     simple_dlist_iterator_t* it = (simple_dlist_iterator_t*) malloc(sizeof(simple_dlist_iterator_t));
     it->_list = list;
@@ -164,7 +164,7 @@ simple_dlist_iterator_t* get_dlist_iterator(simple_dlist_t* list, int forward)
     }
 }
 
-void free_iterator(simple_dlist_iterator_t* iterator)
+void dlist_free_iterator(simple_dlist_iterator_t* iterator)
 {
     free(iterator);
 }
