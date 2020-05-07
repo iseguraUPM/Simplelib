@@ -71,18 +71,18 @@ int dlist_add_test()
         fscanf(stdin, "%d\n", input + i);
     }
 
-    simple_dlist_t* dlist = create_dlist();
+    simple_dlist_t* dlist = dlist_create();
     for (int i = 0; i < size; i++)
     {
-        add_dlist(dlist, input[i]);
+        dlist_add(dlist, input[i]);
     }
 
-    for (int i = 0; i < get_dlist_size(dlist); i++)
+    for (int i = 0; i < dlist_get_size(dlist); i++)
     {
-        fprintf(stdout, "%d\n", *at_dlist(dlist, i));
+        fprintf(stdout, "%d\n", *dlist_at(dlist, i));
     }
 
-    return get_dlist_size(dlist) == size;
+    return dlist_get_size(dlist) == size;
 }
 
 int bin_tree_to_list_test()
@@ -104,12 +104,12 @@ int bin_tree_to_list_test()
     }
 
     simple_dlist_t* dlist = bin_tree_to_sorted_list(tree);
-    for (int i = 0; i < get_dlist_size(dlist); i++)
+    for (int i = 0; i < dlist_get_size(dlist); i++)
     {
-        fprintf(stdout, "%d\n", *at_dlist(dlist, i));
+        fprintf(stdout, "%d\n", *dlist_at(dlist, i));
     }
 
-    return bin_tree_get_size(tree) == get_dlist_size(dlist);
+    return bin_tree_get_size(tree) == dlist_get_size(dlist);
 }
 
 int bin_tree_remove_root_test()
@@ -134,9 +134,9 @@ int bin_tree_remove_root_test()
     bin_tree_remove(tree, input[0]);
 
     simple_dlist_t* dlist = bin_tree_to_sorted_list(tree);
-    for (int i = 0; i < get_dlist_size(dlist); i++)
+    for (int i = 0; i < dlist_get_size(dlist); i++)
     {
-        fprintf(stdout, "%d\n", *at_dlist(dlist, i));
+        fprintf(stdout, "%d\n", *dlist_at(dlist, i));
     }
 
     return bin_tree_get_size(tree) == size - 1;
@@ -236,13 +236,13 @@ int dlist_iterator_test()
         fscanf(stdin, "%d\n", input + i);
     }
 
-    simple_dlist_t* dlist = create_dlist();
+    simple_dlist_t* dlist = dlist_create();
     for (int i = 0; i < size; i++)
     {
-        add_dlist(dlist, input[i]);
+        dlist_add(dlist, input[i]);
     }
 
-    simple_dlist_iterator_t* it = get_dlist_iterator(dlist, 1);
+    simple_dlist_iterator_t* it = dlist_get_iterator(dlist, 1);
     int *e = dlist_next(it);
     while (e != NULL)
     {
@@ -250,7 +250,7 @@ int dlist_iterator_test()
         e = dlist_next(it);
     }
 
-    return get_dlist_size(dlist) == size;
+    return dlist_get_size(dlist) == size;
 }
 
 int main(int argc, char** argv)

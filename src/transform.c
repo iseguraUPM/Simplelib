@@ -23,7 +23,7 @@ static void deep_add_leafs(bin_tree_leaf_t * root, simple_dlist_t * list)
         deep_add_leafs(root->_left, list);
         
     }
-    add_dlist(list, root->_value);
+    dlist_add(list, root->_value);
     if (root->_right != NULL)
     {
         deep_add_leafs(root->_right, list);
@@ -32,7 +32,7 @@ static void deep_add_leafs(bin_tree_leaf_t * root, simple_dlist_t * list)
 
 simple_dlist_t* bin_tree_to_sorted_list(simple_bin_tree_t* tree)
 {
-    simple_dlist_t * sorted_list = create_dlist();
+    simple_dlist_t * sorted_list = dlist_create();
     deep_add_leafs(tree->_root, sorted_list);
 
     return sorted_list;
