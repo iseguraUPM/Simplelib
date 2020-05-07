@@ -199,6 +199,34 @@ int hset_remove_test()
     return get_hset_size(hset) == 0;
 }
 
+int dlist_iterator_test()
+{
+    int size;
+    fscanf(stdin, "%d\n", &size);
+
+    int input[size];
+    for (int i = 0; i < size; i++)
+    {
+        fscanf(stdin, "%d\n", input + i);
+    }
+
+    simple_dlist_t* dlist = create_dlist();
+    for (int i = 0; i < size; i++)
+    {
+        add_dlist(dlist, input[i]);
+    }
+
+    simple_dlist_iterator_t* it = get_dlist_iterator(dlist, 1);
+    int *e = dlist_next(it);
+    while (e != NULL)
+    {
+        fprintf(stdout, "%d\n", *e);
+        e = dlist_next(it);
+    }
+
+    return get_dlist_size(dlist) == size;
+}
+
 int main(int argc, char** argv)
 {
     char test[32];
@@ -231,6 +259,10 @@ int main(int argc, char** argv)
     else if (streq(test, "hset-remove"))
     {
         return hset_remove_test();
+    }
+    else if (streq(test, "dlist-iterator"))
+    {
+        return dlist_iterator_test();
     }
 
     return -1;

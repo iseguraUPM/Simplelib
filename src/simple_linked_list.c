@@ -171,16 +171,15 @@ void free_iterator(simple_dlist_iterator_t* iterator)
 
 __DLIST_T* dlist_next(simple_dlist_iterator_t* iterator)
 {
-    if (iterator->_list != NULL && iterator->_current_elem != NULL)
-    {
-        if (iterator->_forward)
-            iterator->_current_elem = iterator->_current_elem->_next;
-        else
-            iterator->_current_elem = iterator->_current_elem->_prev;
-    }
+    if (iterator->_list == NULL || iterator->_current_elem == NULL)
+        return NULL;
+        
+    __DLIST_T* value = &iterator->_current_elem->_elem;
 
-    if (iterator->_current_elem != NULL)
-        return &iterator->_current_elem->_elem;
+    if (iterator->_forward)
+        iterator->_current_elem = iterator->_current_elem->_next;
+    else
+        iterator->_current_elem = iterator->_current_elem->_prev;
 
-    return NULL;
+    return value;
 }
