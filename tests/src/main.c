@@ -3,7 +3,7 @@
 
 #include <simplelib/simple_queue.h>
 #include <simplelib/simple_stack.h>
-#include <simplelib/simple_bin_tree.h>
+#include <simplelib/simple_linked_bin_tree.h>
 #include <simplelib/simple_linked_list.h>
 #include <simplelib/transform.h>
 #include <simplelib/simple_hash_set.h>
@@ -85,7 +85,7 @@ int dlist_add_test()
     return dlist_get_size(dlist) == size;
 }
 
-int bin_tree_to_list_test()
+int dbin_tree_to_list_test()
 {
     int size;
     fscanf(stdin, "%d\n", &size);
@@ -97,22 +97,22 @@ int bin_tree_to_list_test()
     }
 
     // Keys are values
-    simple_bin_tree_t* tree = bin_tree_create();
+    simple_dbin_tree_t* tree = dbin_tree_create();
     for (int i = 0; i < size; i++)
     {
-        bin_tree_put(tree, input[i], input[i]);
+        dbin_tree_put(tree, input[i], input[i]);
     }
 
-    simple_dlist_t* dlist = bin_tree_to_sorted_list(tree);
+    simple_dlist_t* dlist = dbin_tree_to_sorted_list(tree);
     for (int i = 0; i < dlist_get_size(dlist); i++)
     {
         fprintf(stdout, "%d\n", *dlist_at(dlist, i));
     }
 
-    return bin_tree_get_size(tree) == dlist_get_size(dlist);
+    return dbin_tree_get_size(tree) == dlist_get_size(dlist);
 }
 
-int bin_tree_remove_root_test()
+int dbin_tree_remove_root_test()
 {
     int size;
     fscanf(stdin, "%d\n", &size);
@@ -124,22 +124,22 @@ int bin_tree_remove_root_test()
     }
 
     // Keys are values
-    simple_bin_tree_t* tree = bin_tree_create();
+    simple_dbin_tree_t* tree = dbin_tree_create();
     for (int i = 0; i < size; i++)
     {
-        bin_tree_put(tree, input[i], input[i]);
+        dbin_tree_put(tree, input[i], input[i]);
     }
 
     // Remove root (first elem.)
-    bin_tree_remove(tree, input[0]);
+    dbin_tree_remove(tree, input[0]);
 
-    simple_dlist_t* dlist = bin_tree_to_sorted_list(tree);
+    simple_dlist_t* dlist = dbin_tree_to_sorted_list(tree);
     for (int i = 0; i < dlist_get_size(dlist); i++)
     {
         fprintf(stdout, "%d\n", *dlist_at(dlist, i));
     }
 
-    return bin_tree_get_size(tree) == size - 1;
+    return dbin_tree_get_size(tree) == size - 1;
 }
 
 int hset_contains_test()
@@ -272,11 +272,11 @@ int main(int argc, char** argv)
     }
     else if (streq(test, "bintree-to-list"))
     {
-        return bin_tree_to_list_test();
+        return dbin_tree_to_list_test();
     }
     else if (streq(test, "bintree-remove-root"))
     {
-        return bin_tree_remove_root_test();
+        return dbin_tree_remove_root_test();
     }
     else if (streq(test, "hset-contains"))
     {
