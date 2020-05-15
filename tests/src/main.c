@@ -332,6 +332,10 @@ int main(int argc, char** argv)
     {
         return bin_tree_to_list_test();
     }
+    else if (streq(test, "bintree-large"))
+    {
+        return bin_tree_to_list_test();
+    }
     else if (streq(test, "bintree-remove-root"))
     {
         return bin_tree_remove_root_test();
